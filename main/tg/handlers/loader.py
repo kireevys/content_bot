@@ -1,28 +1,31 @@
+from abc import abstractmethod
 from typing import List
 
-from telegram import Update
+from telegram import Update, Message
 from telegram.ext import CallbackContext, MessageHandler, Filters
 
-from main.loaders.series import SeriesLoader, MovieLoader
+from loaders.common import Caption, SeriesCaption, FileContent
+from main.loaders.series import SeriesLoader
+from loaders.movies import MovieLoader
 
 
 class UploadHandler:
     loader = None
     base_filters = None
 
-    # @classmethod
-    # def add_description(cls, update: Update, context: CallbackContext):
-    #     """Добавление описания."""
-    #     cls.uploader(update, context).add_description(update.effective_message.text)
-    #
-    # @classmethod
-    # def add_poster(cls, update: Update, context: CallbackContext):
-    #     """"""
-    #     cls.uploader(update, context).add_poster(update.channel_post.photo[-1].file_id)
+    @classmethod
+    def upload(cls, update: Update, context: CallbackContext) -> None:
+        """Загрузить видео."""
+        message = update.effective_message
+        caption = cls.parse(message)
+        file = FileContent(message.message_id, message.video.file_id)
+        cls.loader.upload(caption, file)
 
     @classmethod
-    def upload(cls, update: Update, context: CallbackContext):
-        cls.loader(update, context).upload()
+    @abstractmethod
+    def parse(cls, message: Message) -> Caption:
+        """Распарсить сообщение."""
+        pass
 
     @classmethod
     def get_handlers(cls) -> List[MessageHandler]:
@@ -39,6 +42,11 @@ class UploadHandler:
 
 class SeriesUploadHandler(UploadHandler):
     loader = SeriesLoader
+
+    @classmethod
+    def parse(cls, message: Message) -> Caption:
+        """Распарсить месседж сериала."""
+        return SeriesCaption.parse(message.caption)
 
 
 class MovieUploadHandler(UploadHandler):

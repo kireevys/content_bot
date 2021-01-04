@@ -104,6 +104,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMOJI = {"ok": "✅"}
+
 
 class LoaderChannels(enum.Enum):
     """Каналы-загрузчики контента."""

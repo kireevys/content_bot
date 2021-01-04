@@ -6,6 +6,7 @@ from telegram.ext import Dispatcher, Updater, CommandHandler, CallbackContext
 
 from main.factory import ViewRender
 from main.views import MainMenu
+from tg.handlers.loader import SeriesUploadHandler
 
 
 def start(update: Update, context: CallbackContext):
@@ -35,6 +36,8 @@ def run() -> Dispatcher:
 
     start_handler = CommandHandler(Commands.START.command, Commands.START.fn)
     dispatcher.add_handler(start_handler)
+
+    [dispatcher.add_handler(handler) for handler in SeriesUploadHandler.get_handlers()]
 
     updater.start_polling(poll_interval=0.2)
 
