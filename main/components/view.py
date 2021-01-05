@@ -15,6 +15,10 @@ class View(ABC):
     def build_keyboard(self) -> Keyboard:
         """Создание клавиатуры представления."""
 
+    @abstractmethod
+    def render(self) -> dict:
+        """Рендерит сама себя."""
+
     def __eq__(self, other: "View") -> bool:
         if self.description != other.description:
             return False

@@ -1,12 +1,13 @@
 import json
 
-from main.components.view import View
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 from main.components.keyborad import Keyboard
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from main.components.view import View
 
 
 class KeyboardFactory:
-    """Фабрика клавиатуры"""
+    """Фабрика клавиатуры."""
 
     def __init__(self, keyboard: Keyboard) -> None:
         self.keyboard = keyboard
@@ -23,15 +24,11 @@ class KeyboardFactory:
 
 
 class ViewRender:
-    """Рендер вьюхи"""
+    """Рендер вьюхи."""
 
     def __init__(self, view: View) -> None:
         self.view = view
 
-    def view_to_message(self):
+    def view_to_message(self) -> dict:
         """Создает сообщение на основе вьюхи."""
-        return {
-            "photo": self.view.media,
-            "caption": self.view.description,
-            "reply_markup": KeyboardFactory(self.view.keyboard).to_column(),
-        }
+        return self.view.render()

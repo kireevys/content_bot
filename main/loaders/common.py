@@ -2,6 +2,7 @@ import re
 from abc import ABC
 
 from django.conf import settings
+from telegram import Message
 
 
 class Loader(ABC):
@@ -28,6 +29,7 @@ class Caption(ABC):
 
 
 class SeriesCaption(Caption):
+    """Описание загружаемой серии."""
     def __init__(
         self, title_ru: str, title_eng: str, episode: int, season: int, lang: str
     ):
@@ -54,7 +56,7 @@ class SeriesCaption(Caption):
 
         title_ru, title_eng = [i.strip() for i in title.split("/")]
 
-        lang = lang[0].strip() if lang else "empty"
+        lang = lang[0].strip() if lang else "RUS"
 
         return cls(title_ru, title_eng, int(episode), int(season), lang)
 
@@ -79,6 +81,11 @@ class FileContent:
     def __init__(self, file_id: str, message_id: int):
         self.file_id = file_id
         self.message_id = message_id
+
+    @classmethod
+    def from_message(cls, message: Message) -> "FileContent":
+        """Строитель из сообщения."""
+        return cls(message.video.file_id, message.message_id)
 
     def __eq__(self, other: "FileContent") -> bool:
         return all((self.file_id == other.file_id, self.message_id == other.message_id))

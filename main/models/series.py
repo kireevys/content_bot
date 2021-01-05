@@ -1,5 +1,8 @@
+import django
 from django.db import models
 
+from main.exceptions import EpisodeAlreadyExists
+from main.loaders.common import FileContent
 from .common import Langs
 
 __all__ = ("Series", "Episode")
@@ -26,10 +29,19 @@ class Series(models.Model):
         """Конструктор сериала."""
         return cls.objects.get_or_create(title_ru=title_ru, title_eng=title_eng)
 
-    def add_episode(self, episode: "Episode") -> None:
-        """Добавление эпизода."""
+    def add_episode(self, episode: "Episode") -> "Episode":
+        """Добавление эпизода.
+
+        Raises:
+            EpisodeAlreadyExists
+        """
         episode.series = self
-        episode.save()
+        try:
+            episode.save()
+        except django.db.utils.IntegrityError:
+            raise EpisodeAlreadyExists(f"Episode {episode} already exists")
+
+        return episode
 
     @property
     def title(self) -> str:
@@ -41,7 +53,7 @@ class Series(models.Model):
 
 
 class Episode(models.Model):
-    """Млдель эпизода."""
+    """Модель эпизода."""
 
     series = models.ForeignKey("Series", on_delete=models.CASCADE)
 
@@ -60,6 +72,13 @@ class Episode(models.Model):
 
         verbose_name = "Эпизоды"
         verbose_name_plural = "Эпизоды"
+
+    def update_content(self, file: FileContent) -> None:
+        """Обновляет данные контента."""
+        self.file_id = file.file_id
+        self.message_id = file.message_id
+
+        self.save()
 
     def __str__(self) -> str:
         """Текстовое представление эпизода."""

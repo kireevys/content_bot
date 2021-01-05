@@ -137,3 +137,51 @@ STATIC_URL = "/static/"
 
 # Bot stuff
 TOKEN = os.getenv("TOKEN")
+
+handlers = ["console", "file"]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "fmt": (
+                "%(levelname)s %(asctime)s %(message)s "
+                "%(funcName)s %(pathname)s %(lineno)s %(name)s"
+            ),
+        },
+        "ultra_verbose": {
+            "format": (
+                "[%(asctime)s][PID:%(process)d][%(levelname)s]"
+                "[%(pa-thname)s:%(lineno)s] %(message)s"
+            )
+        },
+        "verbose": {
+            "format": (
+                "[%(asctime)s][%(process)d][%(levelname)s]"
+                "[%(module)s/%(filename)s:%(lineno)s] %(message)s"
+            )
+        },
+        "simple": {"format": "[%(asctime)s] [%(levelname)s] %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "bot.log",
+            "formatter": "json",
+        },
+    },
+    "loggers": {
+        "main": {"handlers": handlers, "level": "INFO", "propagate": True},
+        "project": {"handlers": handlers, "level": "INFO", "propagate": True},
+        "telegram": {"handlers": ["console"], "level": "INFO", "propagate": True},
+        "loader": {"handlers": handlers, "level": "INFO", "propagate": True},
+    },
+}
