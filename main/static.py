@@ -1,10 +1,7 @@
-import enum
-
-import main.models.common
 from main import models
 
 
-class Static(enum.Enum):
+class Static:
     """Прокси для часто используемой статики."""
 
     MAIN = "main"
@@ -18,10 +15,10 @@ class Static(enum.Enum):
         return self.model.link
 
     @property
-    def model(self) -> main.models.common.Static:
+    def model(self) -> models.Static:
         """Инициализация модели.
 
         Это необходимо, чтобы во время инициализации
         приложение не пыталось получить доступ к БД.
         """
-        return main.models.common.Static.get_by_slug(self.slug)
+        return models.Static.get_by_slug(self.slug)
