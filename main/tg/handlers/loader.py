@@ -48,7 +48,7 @@ class UploadHandler:
 
         else:
             message = publisher.publish(
-                EpisodeUploadView("desc", "media", content),
+                EpisodeUploadView(content),
                 update.effective_message.message_id,
             )
             logger.info("Republish content", extra={"content": content})

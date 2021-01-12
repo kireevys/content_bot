@@ -1,37 +1,58 @@
-from django.conf import settings
-from telegram import InputMediaVideo
+from typing import Collection
 
-from factory import KeyboardFactory
+from django.conf import settings
+from django.db.models import QuerySet
+
 from main import models
 from main.components.button import Button
 from main.components.keyborad import Keyboard
+from main.components.view import PhotoView, VideoView
 from main.components.view import View
+from static import Static
 
 
-class MainMenu(View):
+class MainMenu(PhotoView):
     """Представление главного меню."""
 
-    def __init__(self, description: str, media: str) -> None:
-        super().__init__(description, media)
-
-    def render(self) -> dict:
-        """Рендерит менюху."""
-        return {
-            "photo": self.media,
-            "caption": self.description,
-            "reply_markup": KeyboardFactory(self.keyboard).to_column(),
-        }
+    def __init__(self):
+        self.media = Static(Static.MAIN).link
+        self.caption = "Добро пожаловать"
+        self.keyboard = self.build_keyboard()
 
     def build_keyboard(self) -> Keyboard:
         """Создание клавиатуры для главного меню."""
-        return Keyboard(Button("Меню сериалов", {}), Button("Меню фильмов", {}))
+        return Keyboard(
+            Button("Меню сериалов", {"type": "series"}), Button("Меню фильмов", {})
+        )
 
 
-class EpisodeUploadView(View):
+class ErrorView(PhotoView):
+    """Представление - ошибка."""
+
+    def __init__(self):
+        self.media = Static(Static.MAIN).link
+        self.caption = "Этот раздел находится в разработке)))"
+
+    def build_keyboard(self) -> Keyboard:
+        """Формирование клавиатуры."""
+        return Keyboard(Button("Главное меню", {"type": "main"}))
+
+
+class EpisodeUploadView(VideoView):
     """Представление Эпизода в загрузчике."""
 
-    def __init__(self, description: str, media: str, episode: models.Episode):
-        super().__init__(self._get_upload_description(episode), episode.file_id)
+    def __init__(self, episode: models.Episode):
+        self.episode = episode
+
+    @property
+    def caption(self) -> str:
+        """Геттер для описания."""
+        return self._get_upload_description(self.episode)
+
+    @property
+    def media(self) -> str:
+        """Геттер для медиа."""
+        return self.episode.file_id
 
     @staticmethod
     def _get_upload_description(episode: models.Episode) -> str:
@@ -42,14 +63,39 @@ class EpisodeUploadView(View):
             f"{episode.lang}"
         )
 
-    def render(self) -> dict:
-        """Рендерит ответ на загрузку эпизода."""
-        return {
-            "video": self.media,
-            "caption": self.description,
-            "reply_markup": KeyboardFactory(self.keyboard).to_column(),
-        }
-
     def build_keyboard(self) -> Keyboard:
         """Создание клавиатуры эпизода."""
         return Keyboard(*[])
+
+
+class SeriesMenu(PhotoView):
+    """Главеное меню сериалов."""
+
+    media = Static(Static.MAIN).link
+    caption = "Главное меню сериалов"
+
+    def build_keyboard(self) -> Keyboard:
+        """Создание клавиатуры."""
+        return Keyboard(
+            Button("Все сериалы", {"type": "all"}),
+            Button("Главное меню", {"type": "main"}),
+        )
+
+
+class AllSeries(PhotoView):
+    """Все серии."""
+
+    media = Static(Static.MAIN).link
+    caption = "Все сериалы"
+
+    def __init__(self, qs: QuerySet):
+        self.qs: Collection[models.Series] = qs.all()
+
+    def build_keyboard(self) -> Keyboard:
+        """Формирование клавиатуры."""
+        buttons = [
+            Button(series.title, {"type": "series", "id": series.id})
+            for series in self.qs
+        ]
+        buttons.append(Button("Главное меню", {"type": "main"}))
+        return Keyboard(*buttons)

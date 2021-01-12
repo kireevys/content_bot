@@ -1,8 +1,13 @@
+import logging
+import traceback
+
 import telegram
 from telegram import Bot, InputMediaVideo, InputMediaPhoto, Message
 
 from components.view import View
 from factory import ViewRender
+
+logger = logging.getLogger("main")
 
 
 class Publisher:
@@ -25,12 +30,12 @@ class Publisher:
         return self.bot.edit_message_media(
             chat_id=self.chat_id,
             message_id=previous_message_id,
-            **ViewRender(view).view_to_message(),
+            **ViewRender(view).for_edit(),
         )
 
     def send_media(self, view: View) -> Message:
         """Отправляет медиа в заисимости от содержимого."""
-        rendered = ViewRender(view).view_to_message()
+        rendered = ViewRender(view).for_send()
 
         if rendered.get("video"):
             return self.bot.send_video(**rendered, chat_id=self.chat_id)
@@ -59,6 +64,12 @@ class Publisher:
             previous_message_id: Идентификатор сообщения, которое надо заменить
         """
         try:
-            return self._edit(view, previous_message_id)
-        except (telegram.error.BadRequest, TypeError):
-            return self._replace(view, previous_message_id)
+            message = self._edit(view, previous_message_id)
+            logger.info("Message edited")
+
+        except (telegram.error.BadRequest, TypeError) as e:
+            logger.info(traceback.format_exc())
+            message = self._replace(view, previous_message_id)
+            logger.info("Message replaced")
+
+        return message

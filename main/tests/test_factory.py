@@ -1,44 +1,48 @@
 from django.test import TestCase
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 
-from main.controller import Controller
+from main.components.button import Button
+from main.components.keyborad import Keyboard
+from main.components.view import View, VideoView
 from main.factory import ViewRender
 from main.views import MainMenu
 
 
-class TestController(TestCase):
-    """Проверки контроллера."""
+class SomeView(VideoView):
+    """Тестовая вьюха."""
 
-    def test_entry(self) -> None:
-        """Проверка точки входа."""
-        result = Controller().entry()
+    def __init__(self):
+        self.media = "media"
+        self.caption = "some caption"
+        self.keyboard = self.build_keyboard()
 
-        self.assertEqual(MainMenu("some", "media"), result)
+    def build_keyboard(self) -> "Keyboard":
+        return Keyboard(
+            Button("First", {}),
+            Button("Second", {}),
+        )
 
 
 class TestMessageFactory(TestCase):
     """Проверка фабрики сообщений."""
 
-    def test_view_to_message(self) -> None:
+    def test_view_render_for_edit(self) -> None:
         """Проверка преобразования вьюхи в сообщение."""
-        text = "hello"
-        media = "code_some_media"
-        view = MainMenu(text, media)
-        factory = ViewRender(view)
+
+        factory = ViewRender(SomeView())
         expected = {
-            "photo": media,
-            "caption": text,
+            "media": InputMediaPhoto("media", caption="some caption"),
             "reply_markup": InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("Меню сериалов", callback_data="{}")],
-                    [InlineKeyboardButton("Меню фильмов", callback_data="{}")],
+                    [InlineKeyboardButton("First", callback_data="{}")],
+                    [InlineKeyboardButton("Second", callback_data="{}")],
                 ]
             ),
         }
 
-        message = factory.view_to_message()  # act
+        message = factory.for_edit()  # act
 
-        self.assertEqual(message.get("photo"), expected.get("photo"))
+        self.assertEqual(message.get("media").media, expected.get("media").media)
         self.assertEqual(message.get("caption"), expected.get("caption"))
         self.assertEqual(
             message.get("reply_markup").to_dict(),

@@ -4,17 +4,25 @@ from enum import Enum
 
 from django.conf import settings
 from telegram import Update
-from telegram.ext import CallbackContext, CommandHandler, Dispatcher, Updater
+from telegram.ext import (
+    CallbackContext,
+    CommandHandler,
+    Dispatcher,
+    Updater,
+    CallbackQueryHandler,
+)
 
-from main import models
 from main.factory import ViewRender
 from main.tg.handlers.loader import SeriesUploadHandler
 from main.views import MainMenu
 from static import Static
+from tg.handlers.callback import callback
+from tg.publisher import Publisher
 
 logger = logging.getLogger("telegram")
 
-def error_callback(update, context):
+
+def error_callback(update: Update, context: CallbackContext):
     """Колбек исключений телеги."""
     try:
         raise context.error
@@ -24,10 +32,8 @@ def error_callback(update, context):
 
 def start(update: Update, context: CallbackContext):
     """Отклик на команду /start."""
-    view = MainMenu("test", Static(Static.MAIN).link)
-
-    context.bot.send_photo(
-        chat_id=update.effective_chat.id, **ViewRender(view).view_to_message()
+    Publisher(context.bot, update.effective_message.chat_id).publish(
+        MainMenu(), update.effective_message.message_id
     )
 
 
@@ -50,6 +56,8 @@ def run() -> Dispatcher:
 
     start_handler = CommandHandler(Commands.START.command, Commands.START.fn)
     dispatcher.add_handler(start_handler)
+
+    dispatcher.add_handler(CallbackQueryHandler(callback))
 
     [dispatcher.add_handler(handler) for handler in SeriesUploadHandler.get_handlers()]
 

@@ -1,9 +1,14 @@
 import json
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputMediaPhoto,
+    InputMediaVideo,
+)
 
 from main.components.keyborad import Keyboard
-from main.components.view import View
+from main.components.view import PhotoView, VideoView, View
 
 
 class KeyboardFactory:
@@ -29,6 +34,34 @@ class ViewRender:
     def __init__(self, view: View) -> None:
         self.view = view
 
-    def view_to_message(self) -> dict:
-        """Создает сообщение на основе вьюхи."""
-        return self.view.render()
+    def for_send(self) -> dict:
+        """Словарь для отправки."""
+        if isinstance(self.view, VideoView):
+            return {
+                "video": self.view.media,
+                "caption": self.view.caption,
+                "reply_markup": KeyboardFactory(self.view.build_keyboard()).to_column(),
+            }
+        elif isinstance(self.view, PhotoView):
+            return {
+                "photo": self.view.media,
+                "caption": self.view.caption,
+                "reply_markup": KeyboardFactory(self.view.build_keyboard()).to_column(),
+            }
+        else:
+            raise TypeError("Incorrect view")
+
+    def for_edit(self) -> dict:
+        """Словарь для редактирования."""
+
+        if isinstance(self.view, VideoView):
+            media_class = InputMediaVideo
+        elif isinstance(self.view, PhotoView):
+            media_class = InputMediaPhoto
+        else:
+            raise TypeError("Incorrect view")
+
+        return {
+            "media": media_class(media=self.view.media, caption=self.view.caption),
+            "reply_markup": KeyboardFactory(self.view.build_keyboard()).to_column(),
+        }

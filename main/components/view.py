@@ -6,21 +6,16 @@ from main.components.keyborad import Keyboard
 class View(ABC):
     """Представление экрана."""
 
-    def __init__(self, description: str, media: str) -> None:
-        self.keyboard: Keyboard = self.build_keyboard()
-        self.description: str = description
-        self.media: str = media
+    caption: str
+    media: str
+    keyboard = None
 
     @abstractmethod
     def build_keyboard(self) -> Keyboard:
         """Создание клавиатуры представления."""
 
-    @abstractmethod
-    def render(self) -> dict:
-        """Рендерит сама себя."""
-
     def __eq__(self, other: "View") -> bool:
-        if self.description != other.description:
+        if self.caption != other.caption:
             return False
 
         if self.media != other.media:
@@ -30,3 +25,11 @@ class View(ABC):
             return False
 
         return True
+
+
+class PhotoView(View):
+    """Вьюха для картинок."""
+
+
+class VideoView(View):
+    """Вьюха для видосов."""

@@ -8,6 +8,8 @@ from main import models
 from main.loaders.common import SeriesCaption
 from main.loaders.series import SeriesLoader
 from main.tg.handlers.loader import SeriesUploadHandler
+from tg.handlers.callback import callback, Callback
+from views import SeriesMenu
 
 
 class TestLoaderSeries(TestCase):
@@ -75,3 +77,35 @@ class TestLoaderSeries(TestCase):
             SeriesUploadHandler.upload(update, MagicMock())  # act
 
         p_mock.assert_called_once()
+
+
+class TestCallbackHandler(TestCase):
+    """Проверка ответа колбек-хендлера."""
+
+    def test_reaction(self):
+        """Проверка реакции."""
+        with patch("main.tg.publisher.Publisher.publish") as p_mock:  # type: MagicMock
+            result = callback(
+                MagicMock(callback_query=MagicMock(data='{"type": "series"}')),
+                MagicMock(),
+            )
+
+            p_mock.assert_called_once()
+
+
+class TestCallback(TestCase):
+    """Проверка объекта колбека."""
+
+    def test_init(self):
+        """Проверка инициализации колбека."""
+        result = Callback(MagicMock(data='{"type": "series"}'))
+
+        self.assertEqual(result.callback, {"type": "series"})
+
+    def test_get_view(self):
+        """Проверка выбора вьюхи."""
+        ck = Callback(MagicMock(data='{"type": "series"}'))
+
+        result = ck.get_view()
+
+        self.assertIsInstance(result, SeriesMenu)
