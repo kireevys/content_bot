@@ -21,10 +21,7 @@ class View(ABC):
         if self.media != other.media:
             return False
 
-        if self.keyboard != other.keyboard:
-            return False
-
-        return True
+        return self.keyboard == other.keyboard
 
 
 class PhotoView(View):

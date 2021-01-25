@@ -1,13 +1,22 @@
-import logging
 import json
-from telegram import Update, CallbackQuery
+import logging
+
+from telegram import CallbackQuery, Update
 from telegram.ext import CallbackContext
 
-from main import models
 from components.view import View
-from static import Static
+from main import models
 from main.tg.publisher import Publisher
-from views import SeriesMenu, MainMenu, ErrorView, AllSeries
+from views import (
+    AllSeries,
+    EpisodeChanger,
+    EpisodeView,
+    ErrorView,
+    LanguageMenu,
+    MainMenu,
+    SeasonMenu,
+    SeriesMenu,
+)
 
 logger = logging.getLogger("main")
 
@@ -25,13 +34,21 @@ class Callback:
         """Получение вьюхи для реакции."""
         if self.callback.get("type") == "series":
             if self.callback.get("id"):
-                return SeasonMenu()
+                if self.callback.get("season"):
+                    if self.callback.get("lang"):
+                        return EpisodeChanger(self.callback)
+                    else:
+                        return LanguageMenu(self.callback)
+                else:
+                    return SeasonMenu(self.callback)
             else:
                 return SeriesMenu()
         elif self.callback.get("type") == "main":
             return MainMenu()
         elif self.callback.get("type") == "all":
             return AllSeries(models.Series.objects.all())
+        elif self.callback.get("type") == "episode":
+            return EpisodeView(self.callback)
         else:
             logger.error(f"Untyped callback {self.callback}")
             return ErrorView()

@@ -3,9 +3,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 
 from main.components.button import Button
 from main.components.keyborad import Keyboard
-from main.components.view import View, VideoView
+from main.components.view import VideoView
 from main.factory import ViewRender
-from main.views import MainMenu
 
 
 class SomeView(VideoView):
@@ -17,6 +16,7 @@ class SomeView(VideoView):
         self.keyboard = self.build_keyboard()
 
     def build_keyboard(self) -> "Keyboard":
+        """Формирование клавиатуры."""
         return Keyboard(
             Button("First", {}),
             Button("Second", {}),
@@ -28,7 +28,6 @@ class TestMessageFactory(TestCase):
 
     def test_view_render_for_edit(self) -> None:
         """Проверка преобразования вьюхи в сообщение."""
-
         factory = ViewRender(SomeView())
         expected = {
             "media": InputMediaPhoto("media", caption="some caption"),

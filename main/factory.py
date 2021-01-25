@@ -36,6 +36,7 @@ class ViewRender:
 
     def for_send(self) -> dict:
         """Словарь для отправки."""
+        # TODO: Здесь точно можно обойтись без if
         if isinstance(self.view, VideoView):
             return {
                 "video": self.view.media,
@@ -53,7 +54,6 @@ class ViewRender:
 
     def for_edit(self) -> dict:
         """Словарь для редактирования."""
-
         if isinstance(self.view, VideoView):
             media_class = InputMediaVideo
         elif isinstance(self.view, PhotoView):

@@ -16,7 +16,7 @@ class TestAllSeries(TestCase):
             for num, i in enumerate(range(10))
         ]
         models.Series.objects.bulk_create(objs_series)
-        qs = models.Series.objects.all()
+        qs = models.Series.objects.all().order_by("pk")
         expected = Keyboard(
             *(
                 Button(
@@ -24,9 +24,9 @@ class TestAllSeries(TestCase):
                     {"type": "series", "id": s.id},
                 )
                 for s in qs
-            ),
-            Button("Главное меню", {"type": "main"}),
+            )
         )
+        expected.append(Button("Главное меню", {"type": "main"}))
         view = AllSeries(qs)
 
         result = view.build_keyboard()
