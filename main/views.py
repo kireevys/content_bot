@@ -7,7 +7,7 @@ from main import models
 from main.components.button import Button
 from main.components.keyborad import Keyboard
 from main.components.view import PhotoView, VideoView
-from static import Static
+from main.static import Static
 
 
 class MainMenu(PhotoView):

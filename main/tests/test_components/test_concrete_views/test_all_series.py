@@ -1,9 +1,9 @@
 from django.test import TestCase
 
-from components.button import Button
-from components.keyborad import Keyboard
+from main.components.button import Button
+from main.components.keyborad import Keyboard
 from main import models
-from views import AllSeries
+from main.views import AllSeries
 
 
 class TestAllSeries(TestCase):

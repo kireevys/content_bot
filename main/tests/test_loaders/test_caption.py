@@ -2,7 +2,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from main import models
-from loaders.common import SeriesCaption
+from main.loaders.common import SeriesCaption
 
 
 class TestSeriesCaption(TestCase):

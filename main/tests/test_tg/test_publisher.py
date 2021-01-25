@@ -2,9 +2,9 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from factory import ViewRender
-from tg.publisher import Publisher
-from views import MainMenu
+from main.factory import ViewRender
+from main.tg.publisher import Publisher
+from main.views import MainMenu
 
 
 class TestPublisher(TestCase):

@@ -4,8 +4,8 @@ import traceback
 import telegram
 from telegram import Bot, Message
 
-from components.view import View
-from factory import ViewRender
+from main.components.view import View
+from main.factory import ViewRender
 
 logger = logging.getLogger("main")
 

@@ -4,10 +4,10 @@ import logging
 from telegram import CallbackQuery, Update
 from telegram.ext import CallbackContext
 
-from components.view import View
+from main.components.view import View
 from main import models
 from main.tg.publisher import Publisher
-from views import (
+from main.views import (
     AllSeries,
     EpisodeChanger,
     EpisodeView,

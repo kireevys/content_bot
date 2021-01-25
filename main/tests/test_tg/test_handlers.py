@@ -8,8 +8,8 @@ from main import models
 from main.loaders.common import SeriesCaption
 from main.loaders.series import SeriesLoader
 from main.tg.handlers.loader import SeriesUploadHandler
-from tg.handlers.callback import Callback, callback
-from views import SeriesMenu
+from main.tg.handlers.callback import Callback, callback
+from main.views import SeriesMenu
 
 
 class TestLoaderSeries(TestCase):

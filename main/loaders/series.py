@@ -3,7 +3,7 @@ from typing import Union
 
 from django.conf import settings
 
-from loaders.common import FileContent, Loader, SeriesCaption  # noqa: I202
+from main.loaders.common import FileContent, Loader, SeriesCaption  # noqa: I202
 from main import models
 
 logger = logging.getLogger("loader")
