@@ -8,7 +8,7 @@ from main import models
 from main.loaders.common import SeriesCaption
 from main.loaders.series import SeriesLoader
 from main.tg.handlers.loader import SeriesUploadHandler
-from tg.handlers.callback import callback, Callback
+from tg.handlers.callback import Callback, callback
 from views import SeriesMenu
 
 
@@ -38,7 +38,8 @@ class TestLoaderSeries(TestCase):
             )
         )
         with patch("main.tg.publisher.Publisher.publish") as p_mock:  # type: MagicMock
-            with patch.object(SeriesLoader, "upload") as m:  # type: # MagicMock
+            with patch.object(SeriesLoader, "upload") as m:  # type: MagicMock
+
                 SeriesUploadHandler.upload(update, MagicMock())  # act
 
         m.assert_called_once()
@@ -58,6 +59,7 @@ class TestLoaderSeries(TestCase):
             with patch.object(
                 SeriesLoader, "upload", side_effect=exceptions.EpisodeAlreadyExists()
             ) as m:  # type: MagicMock
+
                 SeriesUploadHandler.upload(update, MagicMock())  # act
 
         m.assert_called_once()
@@ -74,6 +76,7 @@ class TestLoaderSeries(TestCase):
             )
         )
         with patch("main.tg.publisher.Publisher.delete") as p_mock:  # type: MagicMock
+
             SeriesUploadHandler.upload(update, MagicMock())  # act
 
         p_mock.assert_called_once()
@@ -85,7 +88,8 @@ class TestCallbackHandler(TestCase):
     def test_reaction(self):
         """Проверка реакции."""
         with patch("main.tg.publisher.Publisher.publish") as p_mock:  # type: MagicMock
-            result = callback(
+
+            callback(  # act
                 MagicMock(callback_query=MagicMock(data='{"type": "series"}')),
                 MagicMock(),
             )

@@ -6,16 +6,14 @@ from django.conf import settings
 from telegram import Update
 from telegram.ext import (
     CallbackContext,
+    CallbackQueryHandler,
     CommandHandler,
     Dispatcher,
     Updater,
-    CallbackQueryHandler,
 )
 
-from main.factory import ViewRender
 from main.tg.handlers.loader import SeriesUploadHandler
 from main.views import MainMenu
-from static import Static
 from tg.handlers.callback import callback
 from tg.publisher import Publisher
 

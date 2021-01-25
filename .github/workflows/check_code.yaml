@@ -28,11 +28,7 @@ jobs:
         run: pip install -r lint_requirements.txt
       - name: lint
         run: |
-          flake8 --max-line-length=88 --docstring-convention=google
-          --ignore=D100,D104,D105,D107,S101,W503,I100,I201,I202
-          --import-order-style=pycharm --exclude=main/migrations
-
-
+          flake8 --max-line-length=88 --docstring-convention=google          --ignore=D100,D104,D105,D107,S101,W503,I100,I201,I202          --import-order-style=pycharm --exclude=main/migrations
   run_tests:
 
     runs-on: ubuntu-latest

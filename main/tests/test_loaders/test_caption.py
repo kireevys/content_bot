@@ -19,7 +19,7 @@ RUS"""
 
         self.assertEqual(result, expected)
 
-    def test_strip_ok_emoji(self):
+    def test_strip_ok_emoji(self):  # noqa: AAA01
         """Проверка обрезки эмоджи."""
         for i, expected in [
             (f"{settings.EMOJI.get('ok')}aa", "aa"),

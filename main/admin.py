@@ -2,7 +2,6 @@ from django.contrib import admin
 
 # Register your models here.
 import main.models.common
-from main import models
 
 
 @admin.register(main.models.common.User)

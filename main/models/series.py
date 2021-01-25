@@ -73,10 +73,10 @@ class Episode(models.Model):
         verbose_name = "Эпизоды"
         verbose_name_plural = "Эпизоды"
 
-    def update_content(self, file: FileContent) -> None:
+    def update_content(self, file_content: FileContent) -> None:
         """Обновляет данные контента."""
-        self.file_id = file.file_id
-        self.message_id = file.message_id
+        self.file_id = file_content.file_id
+        self.message_id = file_content.message_id
 
         self.save()
 

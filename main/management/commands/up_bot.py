@@ -5,13 +5,17 @@ from main.tg.run import run
 
 
 class Command(BaseCommand):
-    help = "Bot up"
+    """Команда поднятия бота."""
+
+    help = "Bot up"  # noqa: VNE003
 
     def check_env(self):
+        """Проверка окружения."""
         if None in (settings.TOKEN,):
             raise EnvironmentError("Check your ENV")
 
     def handle(self, *args, **options):
+        """Исполняемый метод."""
         self.check_env()
 
         run()

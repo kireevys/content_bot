@@ -7,7 +7,7 @@ from main.components.keyborad import Keyboard
 class TestKeyboard(TestCase):
     """Проверка базового класса клавитуры."""
 
-    def test_equals(self):
+    def test_equals(self):  # noqa: AAA01
         """Проверка сравнения двух клавиатур."""
         for result, second, expected, ids in [
             (Keyboard(), Keyboard(), True, "both clear"),
@@ -37,7 +37,7 @@ class TestKeyboard(TestCase):
         """Проверка порядка кнопок."""
         buttons = [Button("b", {}), Button("a", {})]
 
-        keyboard = Keyboard(*buttons)  # act
+        result = Keyboard(*buttons)  # act
 
-        self.assertEqual(keyboard.buttons[0], buttons[1])
-        self.assertEqual(keyboard.buttons[1], buttons[0])
+        self.assertEqual(result.buttons[0], buttons[1])
+        self.assertEqual(result.buttons[1], buttons[0])

@@ -8,5 +8,4 @@ class TestView(TestCase):
 
     def test_eq(self) -> None:
         """Проверка метода сравнения для вьюх."""
-        self.assertEqual(MainMenu(), MainMenu())
-
+        self.assertEqual(MainMenu(), MainMenu())  # act

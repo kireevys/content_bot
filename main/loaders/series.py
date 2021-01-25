@@ -3,7 +3,7 @@ from typing import Union
 
 from django.conf import settings
 
-from loaders.common import Loader, SeriesCaption, FileContent
+from loaders.common import FileContent, Loader, SeriesCaption  # noqa: I202
 from main import models
 
 logger = logging.getLogger("loader")
@@ -15,7 +15,9 @@ class SeriesLoader(Loader):
     channel = int(settings.CHANNELS.SERIES.value)
 
     @classmethod
-    def upload(cls, caption: SeriesCaption, file: FileContent) -> Union[models.Episode]:
+    def upload(
+        cls, caption: SeriesCaption, file_content: FileContent
+    ) -> Union[models.Episode]:
         """Сохранение загруженной серии в Хранилище."""
         series, _ = models.Series.objects.get_or_create(
             title_ru=caption.title_ru, title_eng=caption.title_eng
@@ -25,8 +27,8 @@ class SeriesLoader(Loader):
                 episode=caption.episode,
                 season=caption.season,
                 lang=caption.lang,
-                message_id=file.message_id,
-                file_id=file.file_id,
+                message_id=file_content.message_id,
+                file_id=file_content.file_id,
             )
         )
         logger.info(
