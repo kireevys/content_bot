@@ -8,7 +8,8 @@ from telegram import Message
 class Loader(ABC):
     """Загрузчик."""
 
-    channel: int
+    def __init__(self):
+        self.channel: int
 
 
 class Caption(ABC):
@@ -30,6 +31,7 @@ class Caption(ABC):
 
 class SeriesCaption(Caption):
     """Описание загружаемой серии."""
+
     def __init__(
         self, title_ru: str, title_eng: str, episode: int, season: int, lang: str
     ):

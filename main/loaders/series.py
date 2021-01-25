@@ -12,7 +12,9 @@ logger = logging.getLogger("loader")
 class SeriesLoader(Loader):
     """Загрузчик сериалов."""
 
-    channel = int(settings.CHANNELS.SERIES.value)
+    def __init__(self):
+        super().__init__()
+        self.channel = int(settings.CHANNELS.SERIES.value)
 
     @classmethod
     def upload(
