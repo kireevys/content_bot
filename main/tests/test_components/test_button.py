@@ -6,7 +6,7 @@ from main.components.button import Button
 class TestButton(TestCase):
     """Проверки базового класса кнопок."""
 
-    def test_equals(self):
+    def test_equals(self):  # noqa: AAA01
         """Проверка равенства."""
         for first, second, expected, ids in [
             (Button("test_desc", {}), Button("test_desc", {}), True, "equals"),
@@ -19,6 +19,4 @@ class TestButton(TestCase):
             ),
         ]:
             with self.subTest(ids):
-                result = (first == second)  # act
-
-                self.assertEqual(result, expected)
+                self.assertEqual(first == second, expected)  # act

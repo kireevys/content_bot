@@ -33,7 +33,7 @@ class TestSeries(TestCase):
             file_id="file",
         )
 
-        series.add_episode(episode=episode)
+        series.add_episode(episode=episode)  # act
 
         found_episode = models.Episode.objects.get(
             series=series, episode=1, lang=models.Langs.RUS.value

@@ -7,7 +7,7 @@ from main import models
 from main.components.button import Button
 from main.components.keyborad import Keyboard
 from main.components.view import PhotoView, VideoView
-from static import Static
+from main.static import Static
 
 
 class MainMenu(PhotoView):
@@ -71,8 +71,9 @@ class EpisodeUploadView(VideoView):
 class SeriesMenu(PhotoView):
     """Главеное меню сериалов."""
 
-    media = Static(Static.MAIN).link
-    caption = "Главное меню сериалов"
+    def __init__(self):
+        self.media = Static(Static.MAIN).link
+        self.caption = "Главное меню сериалов"
 
     def build_keyboard(self) -> Keyboard:
         """Создание клавиатуры."""
@@ -85,10 +86,9 @@ class SeriesMenu(PhotoView):
 class AllSeries(PhotoView):
     """Все сериалы."""
 
-    media = Static(Static.MAIN).link
-    caption = "Все сериалы"
-
     def __init__(self, qs: QuerySet):
+        self.media = Static(Static.MAIN).link
+        self.caption = "Все сериалы"
         self.qs: Collection[models.Series] = qs.all()
 
     def build_keyboard(self) -> Keyboard:

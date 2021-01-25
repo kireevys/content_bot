@@ -2,10 +2,10 @@ import logging
 import traceback
 
 import telegram
-from telegram import Bot, InputMediaVideo, InputMediaPhoto, Message
+from telegram import Bot, Message
 
-from components.view import View
-from factory import ViewRender
+from main.components.view import View
+from main.factory import ViewRender
 
 logger = logging.getLogger("main")
 
@@ -54,8 +54,7 @@ class Publisher:
         return self.send_media(view)
 
     def publish(self, view: View, previous_message_id: int) -> Message:
-        """
-        Публикация сообщения.
+        """Публикация сообщения.
 
         Этот метод заменяет предыдущее сообщение.
 
@@ -67,9 +66,9 @@ class Publisher:
             message = self._edit(view, previous_message_id)
             logger.info("Message edited")
 
-        except (telegram.error.BadRequest, TypeError) as e:
+        except (telegram.error.BadRequest, TypeError):
             logger.info(traceback.format_exc())
             message = self._replace(view, previous_message_id)
             logger.info("Message replaced")
 
-        return message
+        return message  # noqa: R504

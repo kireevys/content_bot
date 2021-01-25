@@ -6,4 +6,7 @@ from main.loaders.common import Loader
 class MovieLoader(Loader):
     """Загрузчик фильмов."""
 
-    channel = int(settings.CHANNELS.MOVIE.value)
+    @property
+    def channel(self) -> int:
+        """Идентификатор канала загрузчика."""
+        return int(settings.CHANNELS.MOVIE.value)

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from main import models
-from loaders.common import SeriesCaption
+from main.loaders.common import SeriesCaption
 
 
 class TestSeriesCaption(TestCase):
@@ -19,7 +19,7 @@ RUS"""
 
         self.assertEqual(result, expected)
 
-    def test_strip_ok_emoji(self):
+    def test_strip_ok_emoji(self):  # noqa: AAA01
         """Проверка обрезки эмоджи."""
         for i, expected in [
             (f"{settings.EMOJI.get('ok')}aa", "aa"),

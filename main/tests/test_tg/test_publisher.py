@@ -2,9 +2,9 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from factory import ViewRender
-from tg.publisher import Publisher
-from views import MainMenu
+from main.factory import ViewRender
+from main.tg.publisher import Publisher
+from main.views import MainMenu
 
 
 class TestPublisher(TestCase):
@@ -17,9 +17,9 @@ class TestPublisher(TestCase):
         message_id = 321
         view = MainMenu()
         rendered_view = ViewRender(view).for_edit()
-
         with patch.object(bot, "edit_message_media") as m_bot:  # type: MagicMock
-            Publisher(bot, chat_id).publish(view, message_id)
+
+            Publisher(bot, chat_id).publish(view, message_id)  # act
 
         m_bot.assert_called_once_with(
             chat_id=chat_id, message_id=message_id, **rendered_view
