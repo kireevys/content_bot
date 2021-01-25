@@ -1,5 +1,5 @@
 import re
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from django.conf import settings
 from telegram import Message
@@ -8,8 +8,10 @@ from telegram import Message
 class Loader(ABC):
     """Загрузчик."""
 
-    def __init__(self):
-        self.channel: int
+    @property
+    @abstractmethod
+    def channel(self) -> int:
+        """Идентификатор канала."""
 
 
 class Caption(ABC):
